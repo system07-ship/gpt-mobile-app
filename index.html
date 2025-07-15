@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>GPT App</title>
+  <title>GPT-4o Memory App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { background: #111; color: #fff; padding: 20px; font-family: sans-serif; }
+    body { background: #000; color: #fff; padding: 10px; font-family: sans-serif; }
     textarea { width: 100%; height: 100px; }
-    button { padding: 10px 20px; margin-top: 10px; }
-    pre { white-space: pre-wrap; margin-top: 20px; }
+    button { margin-top: 10px; padding: 10px; }
+    pre { white-space: pre-wrap; background: #111; padding: 10px; margin-top: 10px; border-radius: 5px; }
   </style>
 </head>
 <body>
-  <h2>GPT-4o Chat</h2>
+  <h2>GPT-4o with Memory</h2>
   <textarea id="prompt" placeholder="Ask something..."></textarea>
   <br>
   <button onclick="sendPrompt()">Send</button>
-  <button onclick="clearMemory()">🗑️ Clear Memory</button>
+  <button onclick="clearMemory()">🗑️ Clear Chat</button>
   <pre id="response">Reply will appear here...</pre>
 
   <script>
-    // ✅ Memory load karo line 1
+    // Step 1: Load memory
     let memory = JSON.parse(localStorage.getItem("chat_memory") || "[]");
 
-    const API_KEY = "YOUR_API_KEY"; // <--- Replace karo OpenRouter key se
+    const API_KEY = "YOUR_API_KEY"; // <-- Replace this with your OpenRouter API key
 
     async function sendPrompt() {
       const prompt = document.getElementById("prompt").value.trim();
 
-      // ✅ Memory me naya input add karo
+      // Step 2: Add user input to memory
       memory.push({ role: "user", content: prompt });
 
       const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -45,10 +45,10 @@
       const data = await res.json();
       const reply = data.choices?.[0]?.message?.content || "No reply";
 
-      // ✅ Memory me GPT ka response bhi add karo
+      // Step 3: Add GPT reply to memory
       memory.push({ role: "assistant", content: reply });
 
-      // ✅ Memory ko localStorage me save karo
+      // Step 4: Save updated memory
       localStorage.setItem("chat_memory", JSON.stringify(memory));
 
       document.getElementById("response").innerText = reply;
